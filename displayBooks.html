@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Book</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f4f6f8;
+        }
+        .card {
+            background-color: #ffffff;
+            padding: 24px;
+            border-radius: 8px;
+            max-width: 480px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        select {
+            width: 100%;
+            padding: 8px 10px;
+            font-size: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #bookDetails {
+            display: none;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 15px;
+        }
+        #bookDetails p {
+            margin: 8px 0;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Book Details Lookup</h2>
+
+        <!-- Dropdown select element -->
+        <label for="bookDropdown">Select a book title:</label>
+        <select id="bookDropdown">
+            <option value="">-- Choose a title --</option>
+        </select>
+
+        <!-- Container to display book details -->
+        <div id="bookDetails">
+            <p><strong>Title:</strong> <span id="title"></span></p>
+            <p><strong>Author:</strong> <span id="author"></span></p>
+            <p><strong>Publication Year:</strong> <span id="pubYear"></span></p>
+            <p><strong>Genre:</strong> <span id="genres"></span></p>
+        </div>
+    </div>
+
+    <script>
+        // Here is where the GitHub raw URL is used:
+        const GITHUB_RAW_URL = "https://raw.githubusercontent.com/clysaaaaa/WDLab6-books/main/books.json";
+
+        let books = [];
+        const dropdown = document.getElementById("bookDropdown");
+        const detailsContainer = document.getElementById("bookDetails");
+
+        // Fetch data from your GitHub repository
+        fetch(GITHUB_RAW_URL)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("HTTP error " + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Supports both "books" or "Books" depending on your books.json key
+                books = data.Books || data.books;
+
+                books.forEach(book => {
+                    const option = document.createElement("option");
+                    option.value = book.title;
+                    option.textContent = book.title;
+                    dropdown.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error);
+            });
+
+        // Search and display details when an option is selected
+        dropdown.addEventListener("change", function () {
+            const selectedTitle = this.value;
+
+            if (!selectedTitle) {
+                detailsContainer.style.display = "none";
+                return;
+            }
+
+            const foundBook = books.find(book => book.title === selectedTitle);
+
+            if (foundBook) {
+                document.getElementById("title").textContent = foundBook.title;
+                document.getElementById("author").textContent = foundBook.author;
+                document.getElementById("pubYear").textContent = foundBook.publicationYear;
+                document.getElementById("genres").textContent = Array.isArray(foundBook.genres) 
+                    ? foundBook.genres.join(", ") 
+                    : foundBook.genres;
+
+                detailsContainer.style.display = "block";
+            }
+        });
+    </script>
+</body>
+</html>
