@@ -8,7 +8,7 @@
             width: 380px;
             margin: 30px auto;
             padding: 20px;
-            border: 1px solid #ccc;
+            border: 1px solid black;
         }
 
         label {
@@ -24,7 +24,7 @@
 
         #bookDetails {
             display: none;
-            border-top: 1px solid #aaa;
+            border-top: 1px solid grey;
             padding-top: 10px;
         }
 
@@ -54,7 +54,6 @@
     <script>
         let bookList = [];
 
-        // Fetch JSON data using async/await and try/catch as shown in Part 3 slide 28
         async function loadBooks() {
             try {
                 let response = await fetch("https://raw.githubusercontent.com/elysacd/WDLab6-books/main/books.json");
